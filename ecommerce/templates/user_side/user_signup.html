@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Signup</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add custom styles for the page */
+        body {
+            background-color: #f8f9fa;
+            background-image: url('{% static "user_static/images/ecommerce_banner2.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 900px; /* Adjust the maximum width as needed */
+            margin: 100px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .custom-image {
+            height: auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{% static 'user_static/images/ecommerce_banner3.jpg' %}" alt="Image" class="custom-image">
+            </div>
+            <div class="col-md-6">
+                <h1 class="text-center mb-4">User Signup</h1>
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile">Mobile:</label>
+                        <input type="tel" name="mobile" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password:</label>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ref_code">Referral Code:</label>
+                        <input type="text" id="ref_code" name="ref_code">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+
+                {% if error %}
+                    <div class="alert alert-danger mt-3">
+                        {{ error }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

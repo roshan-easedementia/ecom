@@ -1,0 +1,109 @@
+<!--<style>-->
+<!--        .alert {-->
+<!--            padding: 15px;-->
+<!--            margin-bottom: 20px;-->
+<!--            border: 1px solid transparent;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        .alert-danger {-->
+<!--            color: #721c24;-->
+<!--            background-color: #f8d7da;-->
+<!--            border-color: #f5c6cb;-->
+<!--        }-->
+
+<!--        .close-btn {-->
+<!--            cursor: pointer;-->
+<!--            float: right;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--    </style>-->
+<!--{% for message in messages %}-->
+<!--        {%if message.tags == 'info'%}-->
+<!--        <div class="alert alert-info">-->
+<!--            {{ message }}-->
+<!--            <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>-->
+<!--        </div>-->
+<!--         {% elif message.tags == 'success'%}-->
+<!--        <div class="alert alert-success">-->
+<!--            {{ message }}-->
+<!--            <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>-->
+<!--        </div>-->
+<!--       {% elif message.tags == 'warning'%}-->
+<!--        <div class="alert alert-warning">-->
+<!--            {{ message }}-->
+<!--            <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>-->
+<!--        </div>-->
+<!--            {%else%}-->
+<!--        <div class="alert alert-danger">-->
+<!--            {{ message }}-->
+<!--            <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>-->
+<!--        </div>-->
+
+<!--         {%endif%}-->
+<!--    {% endfor %}-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+
+
+
+<style>
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .close-btn {
+        cursor: pointer;
+        float: right;
+        font-weight: bold;
+    }
+</style>
+{% for message in messages %}
+    {% if message.tags == 'info' %}
+        <div class="alert alert-info">
+            {{ message }}
+            <span class="close-btn" onclick="closeMessage(this.parentElement);">&times;</span>
+        </div>
+    {% elif message.tags == 'success' %}
+        <div class="alert alert-success">
+            {{ message }}
+            <span class="close-btn" onclick="closeMessage(this.parentElement);">&times;</span>
+        </div>
+    {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning">
+            {{ message }}
+            <span class="close-btn" onclick="closeMessage(this.parentElement);">&times;</span>
+        </div>
+    {% else %}
+        <div class="alert alert-danger">
+            {{ message }}
+            <span class="close-btn" onclick="closeMessage(this.parentElement);">&times;</span>
+        </div>
+    {% endif %}
+{% endfor %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function closeMessage(element) {
+        element.style.display = 'none';
+    }
+
+    // Auto-close the messages after 5 seconds
+    $(document).ready(function () {
+        $('.alert').each(function () {
+            const alertElement = this;
+            setTimeout(function () {
+                $(alertElement).fadeOut('slow', function () {
+                    $(alertElement).remove();
+                });
+            }, 5000);
+        });
+    });
+</script>

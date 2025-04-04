@@ -1,0 +1,147 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block title %}Add Product{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title" style="margin-top: 70px;">Add Product</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'adminpanel:add_product' %}">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="{{ form.product_id.id_for_label }}">Product ID</label>
+                                <input type="text" class="form-control" id="product_id" name="product_id">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="{{ form.name.id_for_label }}">Product Name</label>
+                                <input type="text" class="form-control" id="product_name" name="product_name">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category">Category</label>
+                            <select class="form-control" id="category" name="category">
+                                <option value="">Select an option</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}">Description</label>
+                            <textarea name="description" class="form-control" rows="4"></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label for="{{ form.price.id_for_label }}">Price</label>
+                                <input type="text" class="form-control" id="price" name="price">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="{{ form.brand.id_for_label }}">Brand</label>
+                                <select class="form-control" id="{{ form.brand.id_for_label }}" name="brand">
+                                    <option value="">Select an option</option>
+                                    {% for brand in brands %}
+                                        <option value="{{ brand.id }}">{{ brand.brand_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}">Image</label>
+                            <input type="file" class="form-control" id="id_images" name="images[]" accept="image/*" multiple>
+                            <div id="image-preview" name="image_1" class="mt-3"></div>
+                            <button type="button" id="crop-button" class="btn btn-primary mt-3" style="display: none;">Crop Image</button>
+                            <input type="hidden" id="cropped-image" name="cropped_image" value="">
+                        </div>
+                        
+                        <div class="text-center"> <!-- Center the form -->
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <a href="{% url 'adminpanel:product_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Function to initialize the Cropper.js instance for image cropping
+    function initImageCropper() {
+        const imageInput = document.getElementById('id_images');
+        const imagePreview = document.getElementById('image-preview');
+        const cropButton = document.getElementById('crop-button');
+      
+        imageInput.addEventListener('change', function (e) {
+          const file = e.target.files[0];
+      
+          if (!file) return;
+      
+          const reader = new FileReader();
+      
+          reader.onload = function () {
+            const img = new Image();
+            img.src = reader.result;
+      
+            img.onload = function () {
+              // Clear previous previews and append the new one
+              imagePreview.innerHTML = '';
+              imagePreview.appendChild(img);
+      
+              // Initialize Cropper.js
+              const cropper = new Cropper(img, {
+                aspectRatio: 1, // Set the aspect ratio for cropping
+                viewMode: 1,
+                guides: true,
+                background: false,
+                autoCropArea: 0.8,
+                responsive: true,
+              });
+      
+              // Show the crop button after image loaded
+              cropButton.style.display = 'block';
+      
+              // Attach event listener to crop button
+              cropButton.addEventListener('click', function () {
+                // Get cropped canvas and convert it to blob
+                const croppedCanvas = cropper.getCroppedCanvas();
+                croppedCanvas.toBlob(function (blob) {
+                  // Create a new image element to preview the cropped image
+                  const croppedImg = new Image();
+                  croppedImg.src = URL.createObjectURL(blob);
+      
+                  // Set the size of the preview image
+                  croppedImg.style.width = '840px';
+                  croppedImg.style.height = '840px';
+      
+                  // Clear previous previews and append the new one
+                  imagePreview.innerHTML = '';
+                  imagePreview.appendChild(croppedImg);
+
+                  // Update the hidden field with the cropped image data
+                  const croppedImageInput = document.getElementById('cropped-image');
+                  croppedImageInput.value = blob;
+                });
+              });
+            };
+          };
+      
+          reader.readAsDataURL(file);
+        });
+      }
+      
+      // Call the function to initialize the image cropper
+      initImageCropper();
+</script>
+
+{% endblock %}

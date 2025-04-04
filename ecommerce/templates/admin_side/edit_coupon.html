@@ -1,0 +1,43 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+
+{% block title %}Edit Coupon{% endblock title %}
+
+
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h3>Edit Coupon</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="coupon_code">Coupon Code:</label>
+                    <input type="text" class="form-control" id="coupon_code" name="coupon_code" value="{{ coupon.coupon_code }}">
+                </div>
+                <div class="form-group">
+                    <label for="discount_amount">Discount Amount:</label>
+                    <input type="number" class="form-control" id="discount_amount" name="discount_amount" value="{{ coupon.discount_amount }}">
+                </div>
+                <div class="form-group">
+                    <label for="minimum_amount">Minimum Amount:</label>
+                    <input type="number" class="form-control" id="minimum_amount" name="minimum_amount" value="{{ coupon.minimum_amount }}">
+                </div>
+                <div class="form-group">
+                    <label for="valid_from">Valid From:</label>
+                    <input type="date" class="form-control" id="valid_from" name="valid_from" value="{{ coupon.valid_from }}">
+                </div>
+                <div class="form-group">
+                    <label for="valid_to">Valid To:</label>
+                    <input type="date" class="form-control" id="valid_to" name="valid_to" value="{{ coupon.valid_to }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="{% url 'adminpanel:coupon_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

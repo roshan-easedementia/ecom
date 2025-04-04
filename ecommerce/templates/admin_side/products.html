@@ -1,0 +1,107 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+
+
+{% block title %}Products{% endblock title %}
+
+{% block content %}
+<style>
+  /* Custom CSS to reduce table size and center it */
+  .table-container {
+    max-width: 1000px; /* Set the maximum width of the table */
+    margin: 100px auto; /* Center the table horizontally and add margin at the top */
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px; /* Add some space between the search bar and the button */
+  }
+
+  /* Add padding to the table cells */
+  .table th,
+  .table td {
+    padding: 8px;
+  }
+
+  /* Center the text in the "Actions" column */
+  .table td.actions {
+    text-align: center;
+  }
+</style>
+
+<div class="col-lg-12 d-flex align-items-stretch">
+  <div class="card w-100">
+    <div class="card-body p-4">
+      <h5 class="card-title fw-semibold mb-4">Product List</h5>
+      <div class="search-container">
+        <!-- Search bar -->
+        <form action="{% url 'adminpanel:product_list' %}" method="get">
+          <input type="text" name="search" placeholder="Search by product name">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <!-- Add Product button -->
+        <a href="{% url 'adminpanel:add_product' %}" class="btn btn-primary">Add Product</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table text-nowrap mb-0 align-middle">
+            <thead class="text-dark fs-4">
+                <tr>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Product Id</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Name</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Category</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Description</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Price</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Brand</h6>
+                    </th>
+                    
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Image</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Actions</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.product_id }}</td>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.category.category_name }}</td> {# Use product.category.category_name to access the category name #}
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.brand.brand_name  }}</td>
+                    
+                    <td><img src="{{ product.image.url }}" alt="{{ product.name }}" height="50"></td>
+                    <td class="actions">
+                        <a href="{% url 'adminpanel:edit_product' product_id=product.product_id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <form method="post" action="{% url 'adminpanel:soft_delete_product' product_id=product.product_id %}" style="display: inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                      </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    </div>
+  </div>
+</div>
+{% endblock %}
+

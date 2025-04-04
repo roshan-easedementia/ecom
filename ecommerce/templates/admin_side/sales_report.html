@@ -1,0 +1,192 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block title %}Sales Report{% endblock title %}
+
+{% block content %}
+<div class="screen-overlay"></div>
+
+<main class="main-wrap">
+    <section class="content-main">
+        <div class="card mb-4">
+            <h3 style="margin-top: 100px;">Sales Report</h3>
+            <header class="card-header">
+                <div class="row align-items-center">
+                    <form action="{% url 'adminpanel:sales_report' %}" method="post">
+                        {% csrf_token %}
+                        <span style="float: left;">From</span>
+                        <div class="col-md-2 col-6" style="float: left;">
+                            <input type="date" value="{{ fromDate }}" class="form-control" name="fromDate">
+                        </div>
+                        <span style="float: left;">To</span>
+                        <div class="col-md-2 col-6" style="float: left;">
+                            <input type="date" value="{{ toDate }}" class="form-control" name="toDate">
+                        </div>
+                        <select name="timePeriod" class="form-select" required>
+                            <option value="all">All</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                        <div>
+                            <button type="submit" class="btn btn-primary rounded font-sm">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </header>
+            <div>
+                <div class="card-body" id="sales-report">
+                    <h4 class="card-title">Sales summary - <span id="reports">{{ reportType|default:'all' }}</span></h4>
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table id="sales-table" class="table align-middle table-nowrap mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" scope="col">Sl No</th>
+                                        <th class="text-center" scope="col">Date</th>
+                                        <th class="text-center" scope="col">Number of orders</th>
+                                        <th class="text-center" scope="col">Total revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if dateWise %}
+                                    {% for order in dateWise %}
+                                    <tr>
+                                        <td class="text-center">
+                                            {{ forloop.counter }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ order.created_at__date|date:"m-d-Y" }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ order.total_orders }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ order.total_revenue|floatformat:2 }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- More content... -->
+                    <br>
+                    <br>
+                    <div class="table-responsive col-4">
+                        <table class="table align-middle table-nowrap mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href="">Total users</a>
+                                    </td>
+                                    <td>
+                                        <P>{{ total_users }}</P>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <a href="">Total Products</a>
+                                    </td>
+                                    <td>
+                                        <p>{{ total_products }}</p>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <a href="">Total orders</a>
+                                    </td>
+                                    <td>
+                                        <p>{{ total_orders }}</p>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <a href="">Total revenue</a>
+                                    </td>
+                                    <td>
+                                        <p id="formattedTotalSales">$ {{ total_revenue|floatformat:2 }}</p>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="float: right;">
+                    <button class="btn btn-primary" id="pdf" onclick="printInvoice()"><i class="text-muted material-icons md-post_add"></i>Download Pdf</button>
+                </div>
+                
+        </div>
+    </section>
+    <!-- Rest of the template... -->
+    <script>
+ 
+        // const formattedTotalSales = formatCurrency('<%= totalSales %>', 'en-US', 'INR');
+        // document.getElementById('formattedTotalSales').textContent = formattedTotalSales;
+        
+
+        function formatCurrency(amount, locale, currency) {
+          return new Intl.NumberFormat(locale, { style: 'currency', currency: currency }).format(amount);
+        }
+     
+    </script>
+</main>
+
+<script>
+    $(document).ready(function () {
+        $('#pdf').click(function (e) {
+            event.preventDefault();
+            var element = document.getElementById('sales-report');
+            var timePeriod = document.querySelector('[name="timePeriod"]').value;
+
+            console.log(element)
+            let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
+            var opt = {
+                margin: 0,
+                filename: 'SalesReport' + randomNumber + '.pdf',
+                html2canvas: { scale: 10 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        })
+    })
+</script>
+
+<script>
+    function printInvoice() {
+        // Hide other elements on the page
+        document.querySelector('header').style.display = 'none';
+        document.querySelector('footer').style.display = 'none';
+        window.print();
+    
+        // Show other elements again after printing is done
+        document.querySelector('header').style.display = 'block';
+        document.querySelector('footer').style.display = 'block';
+    }
+    </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script src="{% static 'admin-assets/js/vendors/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'admin-assets/js/vendors/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'admin-assets/js/vendors/select2.min.js' %}"></script>
+<script src="{% static 'admin-assets/js/vendors/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'admin-assets/js/vendors/jquery.fullscreen.min.js' %}"></script>
+<script src="{% static 'admin-assets/js/vendors/chart.js' %}"></script>
+<!-- Main Script -->
+<script src="{% static 'admin-assets/js/main.js' %}" type="text/javascript"></script>
+<script src="{% static 'admin-assets/js/custom-chart.js' %}" type="text/javascript"></script>
+<!-- Rest of the scripts... -->
+</body>
+</html>
+{% endblock %}

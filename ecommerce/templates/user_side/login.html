@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            background-image: url('{% static "user_static/images/ecommerce_banner2.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
+        }
+        .container {
+            margin-top: 100px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 30px;
+        }
+        .custom-image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+{% include 'user_side/messages.html' %}
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{% static 'user_static/images/ecommerce_banner3.jpg' %}" alt="Image" class="custom-image">
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <h1 class="text-center mb-4">Login</h1>
+                    <form method="post" class="mb-4" action="{%url 'login_with_email_and_otp'%}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+
+                    <div class="text-center">
+                        <a href="{% url 'forgot_password' %}" class="btn btn-link">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="text-center">
+                        Don't have an account? <a href="{% url 'signup' %}" class="btn btn-link">SignUp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS (Optional) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

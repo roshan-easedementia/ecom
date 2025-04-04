@@ -1,0 +1,59 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+
+{% block title %}User List{% endblock title %}
+
+{% block content %}
+<div class="col-lg-12 d-flex align-items-stretch">
+    <div class="card w-100">
+        <div class="card-body p-4" style="margin-top: 50px;">
+            
+            <h5 class="card-title fw-semibold mb-4">User List</h5>
+            <div class="table-responsive">
+                <table class="table text-nowrap mb-0 align-middle">
+                    <thead class="text-dark fs-4">
+                        <tr>
+                            <th class="border-bottom-0">
+                                <h6 class="fw-semibold mb-0">User ID</h6>
+                            </th>
+                            <th class="border-bottom-0">
+                                <h6 class="fw-semibold mb-0">Name</h6>
+                            </th>
+                            <th class="border-bottom-0">
+                                <h6 class="fw-semibold mb-0">Email</h6>
+                            </th>
+                            <th class="border-bottom-0">
+                                <h6 class="fw-semibold mb-0">Phone</h6>
+                            </th>
+                            
+                            <th class="border-bottom-0">
+                                <h6 class="fw-semibold mb-0">Actions</h6>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.user_id }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.mobile }}</td>
+                            
+                            <td>
+                                <form method="post" action="{% url 'adminpanel:block_unblock_user' user.user_id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm {% if user.is_blocked %}btn-danger{% else %}btn-success{% endif %}">
+                                        {% if user.is_blocked %}Unblock{% else %}Block{% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

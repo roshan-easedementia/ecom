@@ -1,0 +1,105 @@
+{% extends 'admin_main/admin_base.html' %}
+{% load static %}
+{% block title %}Product Variants Images{% endblock %}
+{% block body %}
+{% if user.is_authenticated and user.is_staff %}
+
+<main>
+<style>
+      .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .col-md-3 {
+            width: 20%;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .img-wrap img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    <div class="row" style="margin:25px;">
+        <form action="{%url 'product_variant_images_add'%}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="upload-image">Upload Images</label>
+            <div class="input-group" id="upload-image" style="width:40%">
+                <input class="form-control" type="file" name="image_list[]" multiple accept="image/*" >
+                <input name="color" value="{{color}}" type="hidden">
+                <button class="btn btn-info" type="submit">Upload</button>
+            </div>
+        </form>
+
+    </div>
+    {%if image_list%}
+    <div class="row" style="margin:25px;">
+        {% for image in image_list %}
+        <div class="col-md-3">
+            <div class="card card-product-grid">
+                <a href="./product-detail.html" class="img-wrap">
+                    <img src="{{ image.image.url }}" >
+
+                </a>
+            </div>
+            <div class="btn-group">
+                <a style="text-decoration:none;color:black;"
+                   href="{% url 'product_image_delete' image_id=image.uid  color=color %}"
+                   onclick="return confirm('Confirm Delete ? ')"><i class="material-icons" style="color:red;">delete</i></a>
+<!--                <span class="delete-icon">x</span>-->
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+    {%else%}
+    <div class="container">
+        <h4 style="margin:20% 10% 50% 40%">No Images to Display</h4>
+    </div>
+
+    {%endif%}
+
+
+
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+
+    .delete-icon {
+        font-size: 20px;
+
+    }
+
+    .card-product-grid {
+        /* Set the maximum height for the card */
+        height: 260px;
+        /* Add additional styles as needed for padding, margin, etc. */
+        /* For example:
+        margin: 10px;
+        padding: 15px;
+        */
+    }
+
+    .card-product-grid img {
+        /* Set the maximum height and width for the images inside the card */
+        max-width: 100%;
+        max-height: 100%;
+        /* Add additional styles as needed for padding, margin, etc. */
+        /* For example:
+        margin: 0 auto;
+        */
+    }
+</style>
+
+
+
+
+</main>
+
+{% endif %}
+{% endblock %}

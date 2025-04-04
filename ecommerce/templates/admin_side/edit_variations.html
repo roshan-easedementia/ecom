@@ -1,0 +1,24 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block title %}Edit Variations{% endblock title %}
+
+{% block content %}
+<h2>Edit Variation</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group" style="margin-top: 70px;">
+        <label for="variation_category">Variation Category:</label>
+        <input type="text" class="form-control" id="variation_category" name="variation_category" value="{{ variation.variation_category }}">
+    </div>
+    <div class="form-group">
+        <label for="variation_value">Variation Value:</label>
+        <input type="text" class="form-control" id="variation_value" name="variation_value" value="{{ variation.variation_value }}">
+    </div>
+    <div class="form-group">
+        <label for="stock">Stock:</label>
+        <input type="number" class="form-control" id="stock" name="stock" value="{{ variation.stock }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+{% endblock %}
